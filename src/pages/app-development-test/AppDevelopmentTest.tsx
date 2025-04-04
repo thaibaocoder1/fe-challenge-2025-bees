@@ -26,7 +26,7 @@ const AppDevelopmentTestPage = () => {
           params: {
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10,
-            query: query ? query.toString().trim() : undefined,
+            query: query ? query.trim() : undefined,
             field: field ? field : undefined,
             sort: sort ? sort : undefined,
           },
@@ -54,21 +54,10 @@ const AppDevelopmentTestPage = () => {
 
   if (!customerList || !customerPagination) return <TableDataSkeleton amount={10} />;
 
-  // const fetchMoreData = async () => {
-  //   const nextPage = page + 1;
-  //   const customers = await getAllCustomers<TUser>({
-  //     params: {
-  //       page: nextPage,
-  //     },
-  //   });
-
-  //   setCustomerList((prevData = []) => [...prevData, ...(customers.data || [])]);
-  //   setPageState(nextPage);
-
-  //   if (customerList.length + customers.data.length >= customerPagination.totalRecords) {
-  //     setHasMore(false);
-  //   }
-  // };
+  console.log({
+    customerList,
+    customerPagination,
+  });
 
   return (
     <div className='w-full mx-auto bg-white shadow-lg rounded-sm border border-gray-200 flex-grow'>

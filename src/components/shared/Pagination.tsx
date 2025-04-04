@@ -39,6 +39,39 @@ const Pagination = ({
     });
   };
 
+  const getPaginationRange = (currentPage: number, totalPages: number) => {
+    if (pagination.countRecords === 0) return null;
+
+    const delta = 2;
+    const range = [];
+
+    for (
+      let i = Math.max(2, currentPage - delta);
+      i <= Math.min(totalPages - 1, currentPage + delta);
+      i++
+    ) {
+      range.push(i);
+    }
+
+    if (currentPage - delta > 1) {
+      range.unshift('...');
+    }
+    if (currentPage - delta > 2) {
+      range.unshift(1);
+    }
+
+    if (currentPage + delta < totalPages - 1) {
+      range.push('...');
+    }
+    if (currentPage + delta < totalPages) {
+      range.push(totalPages);
+    }
+
+    return [1, ...range, totalPages].filter((x, i, arr) => x !== arr[i + 1]);
+  };
+
+  const paginatedData = getPaginationRange(pagination.currentPage, pagination.totalPages);
+
   return (
     <div className='flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6'>
       <div className='flex flex-1 justify-between sm:hidden'>
@@ -105,22 +138,28 @@ const Pagination = ({
                 />
               </svg>
             </button>
-            {Array.from({ length: pagination.totalPages }, (_, index) => index + 1).map(
-              (number) => (
-                <a
-                  key={number}
-                  href='#!'
-                  onClick={(e) => handlePageChange(number, e)}
-                  className={`relative z-10 inline-flex items-center px-4 py-2 text-sm font-medium rounded-xs transition-all duration-200 ${
-                    pagination.currentPage === number
-                      ? 'bg-indigo-600 text-white shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {number}
-                </a>
-              )
-            )}
+            {paginatedData
+              ? paginatedData.map((number, index) =>
+                  number === '...' ? (
+                    <span key={`ellipsis-${index}`} className='px-4 py-2'>
+                      ...
+                    </span>
+                  ) : (
+                    <a
+                      key={number}
+                      href='#!'
+                      onClick={(e) => handlePageChange(number as number, e)}
+                      className={`relative z-10 inline-flex items-center px-4 py-2 text-sm font-medium rounded-xs transition-all duration-200 ${
+                        pagination.currentPage === number
+                          ? 'bg-indigo-600 text-white shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {number}
+                    </a>
+                  )
+                )
+              : null}
             <button
               type='button'
               disabled={pagination.currentPage >= pagination.totalPages}

@@ -6,28 +6,23 @@ import { useSearchParams } from 'react-router';
 const SearchInput = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [queryValue, setQueryValue] = useState<string>(searchParams.get('query') || '');
+
   const debouncedSearch = useDebounce(queryValue, 500);
 
   useEffect(() => {
-    setQueryValue(searchParams.get('query') || '');
-  }, [searchParams]);
-
-  useEffect(() => {
-    if (debouncedSearch) {
-      setSearchParams(() => {
-        const newParams = new URLSearchParams(searchParams.toString());
-        newParams.set('query', debouncedSearch.toString());
-        newParams.set('page', '1');
-        return newParams;
-      });
-    } else {
-      setSearchParams(() => {
-        const newParams = new URLSearchParams(searchParams.toString());
-        newParams.delete('query');
+    if (debouncedSearch !== searchParams.get('query')) {
+      setSearchParams((prevParams) => {
+        const newParams = new URLSearchParams(prevParams.toString());
+        if (debouncedSearch) {
+          newParams.set('query', debouncedSearch);
+          newParams.set('page', '1');
+        } else {
+          newParams.delete('query');
+        }
         return newParams;
       });
     }
-  }, [debouncedSearch, searchParams, setSearchParams]);
+  }, [debouncedSearch, setSearchParams, searchParams]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQueryValue(e.target.value);
