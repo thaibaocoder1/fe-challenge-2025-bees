@@ -102,7 +102,7 @@ yarn dev
 
 - **Navigate to _App Development Test page_**
 
-![The result of development test!](/assets/development-test.png 'Development Test')
+![The result of development test!](/src/assets/development-test.png 'Development Test')
 
 ## 👏 Acknowledgements
 
