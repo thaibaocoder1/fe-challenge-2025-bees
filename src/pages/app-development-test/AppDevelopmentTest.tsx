@@ -1,71 +1,129 @@
 import AlertErrorMessage from '@/components/AlertMessage';
+import Pagination from '@/components/shared/Pagination';
 import SearchInput from '@/components/shared/Search';
 import TableDataSkeleton from '@/pages/app-development-test/TableDataSkeleton';
 import { getAllCustomers } from '@/services/customer.service';
 import { TPaginationResponse } from '@/types/api-response.type';
 import { TUser } from '@/types/user.type';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
+import InfiniteScrollTable from './InfiniteScrollTable';
 import TableData from './TableData';
 
 const AppDevelopmentTestPage = () => {
-  const [customerList, setCustomerList] = useState<TUser[] | undefined>(undefined);
-  const [customerPagination, setCustomerPagination] = useState<TPaginationResponse | undefined>(
-    undefined
-  );
+  const [customerList, setCustomerList] = useState<TUser[]>([]);
+  const [pagination, setPagination] = useState<TPaginationResponse | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const { page, limit, query, field, sort } = Object.fromEntries(searchParams);
+  const [viewMode, setViewMode] = useState<'pagination' | 'infinite'>('pagination');
 
-  useEffect(() => {
-    const getCustomers = async () => {
+  const fetchCustomers = useCallback(
+    async (pageNum: number, isInfiniteScroll = false) => {
+      const controller = new AbortController();
+      const signal = controller.signal;
+
+      setIsLoading(true);
+
       try {
         const customers = await getAllCustomers<TUser>({
           params: {
-            page: parseInt(page) || 1,
+            page: pageNum,
             limit: parseInt(limit) || 10,
             query: query ? query.trim() : undefined,
             field: field ? field : undefined,
             sort: sort ? sort : undefined,
           },
+          signal,
         });
+
         if (customers) {
           setErrorMessage(null);
           const { data, pagination } = customers;
-          setCustomerList(data);
-          setCustomerPagination(pagination);
+
+          if (isInfiniteScroll && pageNum > 1) {
+            setCustomerList((prev) => [...prev, ...data]);
+          } else {
+            setCustomerList(data);
+          }
+
+          setPagination(pagination);
         }
       } catch (error) {
-        if (axios.isAxiosError(error)) {
+        if (axios.isCancel(error)) {
+          console.log('Request canceled');
+        } else if (axios.isAxiosError(error)) {
           setErrorMessage(
             error.response?.statusText || 'An error occurred while fetching customers.'
           );
         } else {
           setErrorMessage('An unexpected error occurred.');
         }
+      } finally {
+        setIsLoading(false);
       }
-    };
-    getCustomers();
-  }, [page, limit, query, sort, field]);
+
+      return () => controller.abort();
+    },
+    [limit, query, sort, field]
+  );
+
+  useEffect(() => {
+    fetchCustomers(parseInt(page || '1'));
+  }, [fetchCustomers, page, limit, query, sort, field]);
+
+  const handleLoadMore = useCallback(() => {
+    if (pagination && pagination.currentPage < pagination.totalPages) {
+      fetchCustomers(pagination.currentPage + 1, true);
+    }
+  }, [pagination, fetchCustomers]);
+
+  const toggleViewMode = () => {
+    setViewMode((prev) => {
+      if (prev === 'pagination') {
+        return 'infinite';
+      } else {
+        fetchCustomers(1);
+        return 'pagination';
+      }
+    });
+  };
 
   if (errorMessage) return <AlertErrorMessage message={errorMessage} />;
 
-  if (!customerList || !customerPagination) return <TableDataSkeleton amount={10} />;
-
-  console.log({
-    customerList,
-    customerPagination,
-  });
+  if (!pagination && isLoading) return <TableDataSkeleton amount={10} />;
 
   return (
     <div className='w-full mx-auto bg-white shadow-lg rounded-sm border border-gray-200 flex-grow'>
       <header className='px-5 py-4 border-b border-gray-100 flex items-center justify-between'>
         <h2 className='font-semibold text-gray-800'>Customers</h2>
-        <SearchInput />
+        <div className='flex items-center gap-4'>
+          <SearchInput />
+          <button onClick={toggleViewMode} className='ml-2'>
+            {viewMode === 'pagination' ? 'Switch to Infinite Scroll' : 'Switch to Pagination'}
+          </button>
+        </div>
       </header>
-      <TableData data={customerList} pagination={customerPagination} />
+
+      {viewMode === 'pagination' ? (
+        <>
+          <TableData data={customerList} />
+          {pagination && (
+            <div className='px-5 py-4 border-t border-gray-100'>
+              <Pagination pagination={pagination} urlParamName='page' />
+            </div>
+          )}
+        </>
+      ) : (
+        <InfiniteScrollTable
+          data={customerList}
+          isLoading={isLoading}
+          hasMore={pagination ? pagination.currentPage < pagination.totalPages : false}
+          onLoadMore={handleLoadMore}
+        />
+      )}
     </div>
   );
 };

@@ -40,10 +40,11 @@ const Pagination = ({
   };
 
   const getPaginationRange = (currentPage: number, totalPages: number) => {
-    if (pagination.countRecords === 0) return null;
+    if (totalPages <= 1) return [1];
 
     const delta = 2;
     const range = [];
+    const alwaysShowSecondLast = true;
 
     for (
       let i = Math.max(2, currentPage - delta);
@@ -60,20 +61,28 @@ const Pagination = ({
       range.unshift(1);
     }
 
-    if (currentPage + delta < totalPages - 1) {
-      range.push('...');
+    if (alwaysShowSecondLast && totalPages > 1) {
+      const secondLastPage = totalPages - 1;
+      if (!range.includes(secondLastPage) && secondLastPage !== 1) {
+        range.push('...', secondLastPage);
+      }
     }
-    if (currentPage + delta < totalPages) {
+
+    if (!range.includes(totalPages)) {
       range.push(totalPages);
     }
 
-    return [1, ...range, totalPages].filter((x, i, arr) => x !== arr[i + 1]);
+    const result = [1, ...range, totalPages].filter(
+      (x, i, arr) => x !== arr[i + 1] && x !== undefined
+    );
+
+    return result;
   };
 
   const paginatedData = getPaginationRange(pagination.currentPage, pagination.totalPages);
 
   return (
-    <div className='flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6'>
+    <div className='flex items-center justify-between bg-white'>
       <div className='flex flex-1 justify-between sm:hidden'>
         <button
           type='button'
