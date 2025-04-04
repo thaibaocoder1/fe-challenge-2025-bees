@@ -101,7 +101,7 @@ const AppDevelopmentTestPage = () => {
         <h2 className='font-semibold text-gray-800'>Customers</h2>
         <div className='flex items-center gap-4'>
           <SearchInput />
-          <button onClick={toggleViewMode} className='ml-2'>
+          <button onClick={toggleViewMode} className='ml-2 dark:text-gray-900'>
             {viewMode === 'pagination' ? 'Switch to Infinite Scroll' : 'Switch to Pagination'}
           </button>
         </div>

@@ -150,7 +150,7 @@ const Pagination = ({
             {paginatedData
               ? paginatedData.map((number, index) =>
                   number === '...' ? (
-                    <span key={`ellipsis-${index}`} className='px-4 py-2'>
+                    <span key={`ellipsis-${index}`} className='px-4 py-2 dark:text-gray-900'>
                       ...
                     </span>
                   ) : (
