@@ -146,7 +146,7 @@ const TableData: React.FC<Props> = ({ data }) => {
                 <a href={`mailto:${customer.email}`}>{customer.email}</a>
               </td>
               <td className='p-2 whitespace-nowrap relative group'>
-                <span className='text-gray-900'>
+                <span className='text-gray-900 dark:text-white'>
                   {formatDateTime(customer.registerAt).registrationDate}
                 </span>
                 <div className='absolute bottom-8/12 -left-1/2 transform translate-x-1/2 mb-2 hidden group-hover:block text-xs bg-gray-600 text-white rounded p-2 shadow-lg'>

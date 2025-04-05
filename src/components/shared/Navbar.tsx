@@ -1,7 +1,7 @@
 import ThemeToggle from '@/components/ThemeToggle';
 import { Menu } from 'lucide-react';
 import { useState } from 'react';
-import { NavLink } from 'react-router';
+import { Link, NavLink } from 'react-router';
 
 const navItems = [
   { path: '/', label: 'Home' },
@@ -16,7 +16,9 @@ const Navbar = () => {
 
   return (
     <nav className='flex items-center justify-between container mx-auto'>
-      <div className='text-xl font-bold dark:text-white'>BAODEV</div>
+      <Link to={'/'}>
+        <span className='text-xl font-bold dark:text-white'>BAODEV</span>
+      </Link>
       <ul className='hidden lg:flex items-center space-x-6'>
         {navItems.map(({ path, label }) => (
           <li key={path}>
@@ -48,7 +50,9 @@ const Navbar = () => {
         }`}
       >
         <div className='flex justify-between items-center p-4 border-b dark:border-gray-700'>
-          <span className='text-xl font-bold dark:text-white'>BAODEV</span>
+          <Link to={'/'}>
+            <span className='text-xl font-bold dark:text-white'>BAODEV</span>
+          </Link>
           <button onClick={closeSidebar} className='text-gray-500 dark:text-gray-400 text-2xl'>
             &times;
           </button>
