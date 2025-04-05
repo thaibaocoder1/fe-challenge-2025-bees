@@ -1,76 +1,88 @@
+import ThemeToggle from '@/components/ThemeToggle';
+import { Menu } from 'lucide-react';
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router';
-import ThemeToggle from '../ThemeToggle';
+import { NavLink } from 'react-router';
+
+const navItems = [
+  { path: '/', label: 'Home' },
+  { path: '/logic-test', label: 'Logic Test' },
+  { path: '/app-development-test', label: 'App Development Test' },
+];
 
 const Navbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleSidebar = () => setIsOpen(!isOpen);
+  const closeSidebar = () => setIsOpen(false);
 
   return (
-    <nav className='container mx-auto'>
-      <div className='flex flex-wrap justify-between items-center'>
-        <Link to='/' className='flex items-center'>
-          <span className='self-center text-xl font-semibold whitespace-nowrap dark:text-white'>
-            BAODEV
-          </span>
-        </Link>
-
-        <button
-          onClick={toggleMobileMenu}
-          className='lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white focus:outline-none'
-        >
-          <svg
-            className='w-6 h-6'
-            fill='none'
-            stroke='currentColor'
-            viewBox='0 0 24 24'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              d='M4 6h16M4 12h16M4 18h16'
-            ></path>
-          </svg>
-        </button>
-
-        <div
-          className={`lg:flex lg:w-auto lg:order-1 ${
-            isMobileMenuOpen ? 'block' : 'hidden'
-          } lg:block`}
-          id='mobile-menu-2'
-        >
-          <ul className='flex flex-col items-center mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0'>
-            {[
-              { path: '/', label: 'Home' },
-              { path: '/logic-test', label: 'Logic Test' },
-              { path: '/app-development-test', label: 'App Development Test' },
-            ].map(({ path, label }) => (
-              <li key={path}>
-                <NavLink
-                  to={path}
-                  className={({ isActive }) =>
-                    `block py-2 pr-4 pl-3 border-b border-gray-100 lg:border-0 lg:p-0 
-                      transition duration-300 ease-in-out 
-                      ${
-                        isActive
-                          ? 'text-primary-700 dark:text-white'
-                          : 'text-gray-700 dark:text-gray-400 hover:text-primary-700 dark:hover:text-white'
-                      }`
-                  }
-                >
-                  {label}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
+    <nav className='flex items-center justify-between container mx-auto'>
+      <div className='text-xl font-bold dark:text-white'>BAODEV</div>
+      <ul className='hidden lg:flex items-center space-x-6'>
+        {navItems.map(({ path, label }) => (
+          <li key={path}>
+            <NavLink
+              to={path}
+              className={({ isActive }) =>
+                `text-base transition ${
+                  isActive
+                    ? 'text-blue-600 dark:text-white font-semibold'
+                    : 'text-gray-700 dark:text-gray-300 hover:text-blue-600'
+                }`
+              }
+            >
+              {label}
+            </NavLink>
+          </li>
+        ))}
+        <li className='cursor-pointer'>
           <ThemeToggle />
+        </li>
+      </ul>
+
+      <button onClick={toggleSidebar} className='lg:hidden p-2 text-gray-700 dark:text-white'>
+        <Menu size={20} />
+      </button>
+      <div
+        className={`fixed top-0 right-0 h-full w-64 bg-white dark:bg-gray-900 z-40 shadow-lg transform transition-transform duration-300 ease-in-out lg:hidden ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <div className='flex justify-between items-center p-4 border-b dark:border-gray-700'>
+          <span className='text-xl font-bold dark:text-white'>BAODEV</span>
+          <button onClick={closeSidebar} className='text-gray-500 dark:text-gray-400 text-2xl'>
+            &times;
+          </button>
         </div>
+
+        <ul className='flex flex-col p-4 space-y-4'>
+          {navItems.map(({ path, label }) => (
+            <li key={path}>
+              <NavLink
+                to={path}
+                onClick={closeSidebar}
+                className={({ isActive }) =>
+                  `block px-2 py-2 rounded transition ${
+                    isActive
+                      ? 'text-blue-600 dark:text-white font-semibold'
+                      : 'text-gray-700 dark:text-gray-400 hover:text-blue-600 dark:hover:text-white'
+                  }`
+                }
+              >
+                {label}
+              </NavLink>
+            </li>
+          ))}
+          <li className='cursor-pointer'>
+            <ThemeToggle />
+          </li>
+        </ul>
       </div>
+      {isOpen && (
+        <div
+          className='fixed inset-0 bg-black bg-opacity-40 z-30 lg:hidden'
+          onClick={closeSidebar}
+        />
+      )}
     </nav>
   );
 };

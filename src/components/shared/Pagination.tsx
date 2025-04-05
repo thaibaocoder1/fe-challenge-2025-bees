@@ -83,11 +83,12 @@ const Pagination = ({
 
   return (
     <div className='flex items-center justify-between bg-white'>
-      <div className='flex flex-1 justify-between sm:hidden'>
+      <div className='flex flex-1 justify-start sm:hidden'>
         <button
           type='button'
           disabled={pagination.currentPage < 2}
           className='relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:disabled:cursor-not-allowed cursor-pointer'
+          onClick={() => handleClick('prev')}
         >
           Previous
         </button>
@@ -95,6 +96,7 @@ const Pagination = ({
           type='button'
           disabled={pagination.currentPage >= pagination.totalPages}
           className='relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:disabled:cursor-not-allowed cursor-pointer'
+          onClick={() => handleClick('next')}
         >
           Next
         </button>

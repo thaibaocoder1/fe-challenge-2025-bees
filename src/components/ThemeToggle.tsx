@@ -23,7 +23,7 @@ const ThemeToggle = () => {
   };
 
   return (
-    <div className='relative inline-block text-left ml-4' ref={menuRef}>
+    <div className='relative inline-block text-left' ref={menuRef}>
       <button
         type='button'
         className='inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semiboldtext-gray-700 dark:text-gray-400 hover:text-primary-700 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50'

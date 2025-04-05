@@ -96,35 +96,40 @@ const AppDevelopmentTestPage = () => {
   if (!pagination && isLoading) return <TableDataSkeleton amount={10} />;
 
   return (
-    <div className='w-full mx-auto bg-white shadow-lg rounded-sm border border-gray-200 flex-grow'>
-      <header className='px-5 py-4 border-b border-gray-100 flex items-center justify-between'>
-        <h2 className='font-semibold text-gray-800'>Customers</h2>
-        <div className='flex items-center gap-4'>
+    <section className='w-full max-w-full mx-auto bg-white dark:bg-gray-900 shadow-lg rounded-sm border border-gray-200 dark:border-gray-700 flex-grow overflow-hidden'>
+      <div className='px-4 py-3 sm:px-5 sm:py-4 border-b border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4'>
+        <h2 className='font-semibold text-gray-800 dark:text-white text-lg'>Customers</h2>
+        <div className='w-full sm:w-auto flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4'>
           <SearchInput />
-          <button onClick={toggleViewMode} className='ml-2 dark:text-gray-900'>
+          <button
+            onClick={toggleViewMode}
+            className='text-sm text-blue-600 hover:underline dark:text-blue-400'
+          >
             {viewMode === 'pagination' ? 'Switch to Infinite Scroll' : 'Switch to Pagination'}
           </button>
         </div>
-      </header>
+      </div>
 
-      {viewMode === 'pagination' ? (
-        <>
-          <TableData data={customerList} />
-          {pagination && (
-            <div className='px-5 py-4 border-t border-gray-100'>
-              <Pagination pagination={pagination} urlParamName='page' />
-            </div>
-          )}
-        </>
-      ) : (
-        <InfiniteScrollTable
-          data={customerList}
-          isLoading={isLoading}
-          hasMore={pagination ? pagination.currentPage < pagination.totalPages : false}
-          onLoadMore={handleLoadMore}
-        />
-      )}
-    </div>
+      <div className='overflow-x-auto'>
+        {viewMode === 'pagination' ? (
+          <>
+            <TableData data={customerList} />
+            {pagination && (
+              <div className='px-4 py-3 sm:px-5 sm:py-4 border-t border-gray-100 dark:border-gray-700'>
+                <Pagination pagination={pagination} urlParamName='page' />
+              </div>
+            )}
+          </>
+        ) : (
+          <InfiniteScrollTable
+            data={customerList}
+            isLoading={isLoading}
+            hasMore={pagination ? pagination.currentPage < pagination.totalPages : false}
+            onLoadMore={handleLoadMore}
+          />
+        )}
+      </div>
+    </section>
   );
 };
 
