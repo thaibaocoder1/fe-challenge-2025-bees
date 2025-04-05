@@ -51,7 +51,7 @@ const TableData: React.FC<Props> = ({ data }) => {
   return (
     <div className='p-3 overflow-x-auto'>
       <table className='table-auto w-full'>
-        <thead className='text-xs font-semibold uppercase text-slate-900 '>
+        <thead className='text-xs font-semibold uppercase text-slate-900'>
           <tr>
             {TableColumn.map((col) => {
               const sortIcon =
@@ -98,7 +98,7 @@ const TableData: React.FC<Props> = ({ data }) => {
                       </label>
                     </div>
                   )}
-                  <span className='inline-flex items-center gap-1'>
+                  <span className='inline-flex items-center gap-1 dark:text-white whitespace-nowrap'>
                     {col.label}
                     {col.sortable && <span className='text-gray-500'>{sortIcon}</span>}
                   </span>
@@ -107,7 +107,7 @@ const TableData: React.FC<Props> = ({ data }) => {
             })}
           </tr>
         </thead>
-        <tbody className='text-sm divide-y divide-gray-100 bg-slate-50 dark:text-gray-600 dark:bg-white'>
+        <tbody className='text-sm divide-y divide-gray-100 bg-slate-50 dark:text-white dark:bg-gray-900'>
           {data.map((customer) => (
             <tr key={customer.id}>
               <td className='p-2 whitespace-nowrap inline-flex gap-1 items-center'>

@@ -110,7 +110,7 @@ const AppDevelopmentTestPage = () => {
         </div>
       </div>
 
-      <div className='overflow-x-auto'>
+      <div>
         {viewMode === 'pagination' ? (
           <>
             <TableData data={customerList} />

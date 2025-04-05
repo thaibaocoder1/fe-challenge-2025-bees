@@ -82,7 +82,7 @@ const Pagination = ({
   const paginatedData = getPaginationRange(pagination.currentPage, pagination.totalPages);
 
   return (
-    <div className='flex items-center justify-between bg-white'>
+    <div className='flex items-center justify-between bg-white dark:bg-gray-900'>
       <div className='flex flex-1 justify-start sm:hidden'>
         <button
           type='button'
