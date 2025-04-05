@@ -96,7 +96,7 @@ const AppDevelopmentTestPage = () => {
   if (!pagination && isLoading) return <TableDataSkeleton amount={10} />;
 
   return (
-    <section className='w-full max-w-full mx-auto bg-white dark:bg-gray-900 shadow-lg rounded-sm border border-gray-200 dark:border-gray-700 flex-grow overflow-hidden'>
+    <section className='w-full max-w-full mx-auto bg-white dark:bg-gray-900 shadow-lg rounded-sm border border-gray-200 dark:border-gray-700 flex-grow'>
       <div className='px-4 py-3 sm:px-5 sm:py-4 border-b border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4'>
         <h2 className='font-semibold text-gray-800 dark:text-white text-lg'>Customers</h2>
         <div className='w-full sm:w-auto flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4'>
